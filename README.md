@@ -11,7 +11,7 @@ By adding code to this project, you can customize the behavior when it receives 
       |                        |
       +------------------------+
                   |
-                  | 1. Push Notification from Google server.
+                  | 1. Push Notification from Google server
                   |
     +-------------+---------------+---------------------------------------------------------------+
     |             |               |                                                               |
@@ -19,7 +19,7 @@ By adding code to this project, you can customize the behavior when it receives 
     | +------------------------+  |                        +------------------+                   |
     | |                        |  | 2. UnitySendMessage()  |                  |                   |
     | | androidpushplugin.jar  | -+----------------------> | KiiPushPlugin.cs |                   |
-    | |                        |  |                        |                  |                   |
+    | |     (This project)     |  |                        |                  |                   |
     | +------------------------+  |                        +------------------+                   |
     |                             |                                 |                             |
     |                             |                                 |                             |
@@ -35,6 +35,11 @@ By adding code to this project, you can customize the behavior when it receives 
     +----[Native Plugin Layer]----+-----------------------[Unity Layer]---------------------------+
 
 
+
+
+1. Push notification is received in the Native Plugin Layer from GCM
+1. Native Plugin notifies KiiPushPlugin.cs using [UnitySendMessage](http://docs.unity3d.com/Manual/PluginsForAndroid.html "UnitySendMessage").  
+1. KiiPushPlugin.cs notifies your code via OnPushMessageReceived event.
 
 ## How to integrate to your Unity project
 1. Builds this project. (classes.jar will be generated in bin directory.)  
