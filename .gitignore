@@ -1,0 +1,8 @@
+# Ignore Android specific files.
+local.properties
+gen/
+bin/
+*.class
+*.dex
+*.log
+
