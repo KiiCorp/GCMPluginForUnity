@@ -18,7 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 /**
- * Comment lines is a sample how to display message in the status bar.
+ * Comment lines is a example how to display message in the status bar.
  * 
  * @author noriyoshi.fukuzaki@kii.com
  */
@@ -70,7 +70,7 @@ public class GcmIntentService extends IntentService {
 //		}
 //	}
 //	/**
-//	 * Checks if the KiiChat is on foreground.
+//	 * Checks if the Game is on foreground.
 //	 * 
 //	 * @return
 //	 */
