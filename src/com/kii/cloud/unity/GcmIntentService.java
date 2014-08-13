@@ -68,6 +68,8 @@ public class GcmIntentService extends IntentService {
 			Intent notificationIntent = (new Intent()).setComponent(componentName);
 			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 			
+			// TODO:You can configure the sound, LED and vibration if need.
+			// see http://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html
 			int icon = this.getIcon();
 			NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
 				.setContentIntent(pendingIntent)
