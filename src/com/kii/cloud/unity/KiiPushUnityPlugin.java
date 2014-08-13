@@ -34,6 +34,9 @@ public class KiiPushUnityPlugin {
 		Log.d("KiiPushUnityPlugin", "#####KiiPushUnityPlugin constractor");
 	}
 	public String getListenerGameObjectName() {
+		if (TextUtils.isEmpty(this.listenerGameObjectName)) {
+			return "KiiPushPlugin";
+		}
 		return this.listenerGameObjectName;
 	}
 	public void setListenerGameObjectName(String listenerGameObjectName) {
@@ -53,7 +56,7 @@ public class KiiPushUnityPlugin {
 		Editor editor = this.getSharedPreference(context).edit();
 		editor.putString("LAST_MESSAGE", message);
 		editor.commit();
-		UnitySendMessage(this.listenerGameObjectName, "OnPushNotificationsReceived", message);
+		UnitySendMessage(this.getListenerGameObjectName(), "OnPushNotificationsReceived", message);
 	}
 
 	public void getRegistrationID() {
@@ -87,7 +90,7 @@ public class KiiPushUnityPlugin {
 				return null;
 			}
 		};
-		registerTask.execute(this.listenerGameObjectName, this.senderId);
+		registerTask.execute(this.getListenerGameObjectName(), this.senderId);
 	}
 	public void unregisterGCM() throws IOException {
 		Log.d("KiiPushUnityPlugin", "#####unregisterGCM");
@@ -105,7 +108,7 @@ public class KiiPushUnityPlugin {
 				return null;
 			}
 		};
-		unregisterTask.execute(this.listenerGameObjectName);
+		unregisterTask.execute(this.getListenerGameObjectName());
 	}
 	public SharedPreferences getSharedPreference(Context context) {
 		if (this.sharedPreference == null) {
