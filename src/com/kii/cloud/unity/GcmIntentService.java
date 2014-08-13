@@ -59,13 +59,13 @@ public class GcmIntentService extends IntentService {
 		NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 		if (notificationManager != null) {
 			
-			String notificationTitle = "";
-			String notificationText = "";
+			// TODO: Set message to show the title and message on status bar.
+			String notificationTitle = "Title";
+			String notificationText = "Message";
 			
 			String launchClassName = this.getPackageManager().getLaunchIntentForPackage(this.getPackageName()).getComponent().getClassName();
 			ComponentName componentName = new ComponentName(this.getPackageName(), launchClassName);
 			Intent notificationIntent = (new Intent()).setComponent(componentName);
-			notificationIntent.putExtra("notificationData", message);
 			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 			
 			int icon = this.getIcon();
@@ -87,6 +87,7 @@ public class GcmIntentService extends IntentService {
 	 * @return
 	 */
 	private int getIcon() {
+		// TODO: Need to deploy ic_launcher.png to Assets/Plugins/Android/res/drawable
 		return this.getResources().getIdentifier("ic_launcher", "drawable", this.getPackageName());
 	}
 	/**
