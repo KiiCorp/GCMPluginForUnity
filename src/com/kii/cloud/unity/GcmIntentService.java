@@ -89,7 +89,7 @@ public class GcmIntentService extends IntentService {
 	 * @return
 	 */
 	private int getIcon() {
-		// TODO: Need to deploy ic_launcher.png to Assets/Plugins/Android/res/drawable
+		// TODO: Need to deploy ic_launcher.png to Plugins/Android/res/drawable
 		return this.getResources().getIdentifier("ic_launcher", "drawable", this.getPackageName());
 	}
 	/**
