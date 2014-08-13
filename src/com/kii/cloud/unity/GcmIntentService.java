@@ -1,20 +1,22 @@
 package com.kii.cloud.unity;
 
-//import java.util.List;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-//import android.app.ActivityManager;
-//import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.IntentService;
-//import android.app.NotificationManager;
-//import android.content.Context;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-//import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -36,10 +38,10 @@ public class GcmIntentService extends IntentService {
 		if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 			Bundle extras = intent.getExtras();
 			String message = this.toJson(extras).toString();
-			KiiPushUnityPlugin.getInstance().sendPushNotification(message);
-//			if (!this.isForeground()) {
-//				this.showNotificationArea(message);
-//			}
+			KiiPushUnityPlugin.getInstance().sendPushNotification(this, message);
+			if (!this.isForeground()) {
+				this.showNotificationArea(message);
+			}
 		}
 		GCMBroadcastReceiver.completeWakefulIntent(intent);
 	}
@@ -53,36 +55,54 @@ public class GcmIntentService extends IntentService {
 		}
 		return json;
 	}
-	
-//	/**
-//	 * Shows a received message in the notification area.
-//	 * 
-//	 * @param json
-//	 */
-//	private void showNotificationArea(String json) {
-//		NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
-//		if (notificationManager != null) {
-//			NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-//			.setSmallIcon(android.R.drawable.ic_menu_info_details)
-//			.setContentTitle("New message received!!")
-//			.setContentText(json);
-//			notificationManager.notify(0, notificationBuilder.build());
-//		}
-//	}
-//	/**
-//	 * Checks if the Game is on foreground.
-//	 * 
-//	 * @return
-//	 */
-//	private boolean isForeground(){
-//		ActivityManager am = (ActivityManager)this.getSystemService(Context.ACTIVITY_SERVICE);
-//		List<RunningAppProcessInfo> processInfoList = am.getRunningAppProcesses();
-//		for(RunningAppProcessInfo info : processInfoList){
-//			if(info.processName.equals(this.getPackageName()) && info.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND){
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+	private void showNotificationArea(String message) {
+		NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+		if (notificationManager != null) {
+			
+			String notificationTitle = "";
+			String notificationText = "";
+			
+			String launchClassName = this.getPackageManager().getLaunchIntentForPackage(this.getPackageName()).getComponent().getClassName();
+			ComponentName componentName = new ComponentName(this.getPackageName(), launchClassName);
+			Intent notificationIntent = (new Intent()).setComponent(componentName);
+			notificationIntent.putExtra("notificationData", message);
+			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			
+			int icon = this.getIcon();
+			NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+				.setContentIntent(pendingIntent)
+				.setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setAutoCancel(true)
+				.setWhen(System.currentTimeMillis())
+				.setSmallIcon(icon)
+				.setContentTitle(notificationTitle)
+				.setContentText(notificationText);
+			notificationManager.notify(0, notificationBuilder.build());
+		}
+	}
+	/**
+	 * Gets resource id of launcher icon.
+	 * 
+	 * @param context
+	 * @return
+	 */
+	private int getIcon() {
+		return this.getResources().getIdentifier("ic_launcher", "drawable", this.getPackageName());
+	}
+	/**
+	 * Checks if the application is on foreground.
+	 * 
+	 * @return
+	 */
+	private boolean isForeground(){
+		ActivityManager am = (ActivityManager)this.getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningAppProcessInfo> processInfoList = am.getRunningAppProcesses();
+		for(RunningAppProcessInfo info : processInfoList){
+			if(info.processName.equals(this.getPackageName()) && info.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND){
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
