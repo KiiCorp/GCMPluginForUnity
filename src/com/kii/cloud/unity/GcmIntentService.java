@@ -37,10 +37,11 @@ public class GcmIntentService extends IntentService {
 		Log.d("GcmIntentService", "#####messageType=" + messageType);
 		if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 			Bundle extras = intent.getExtras();
-			String message = this.toJson(extras).toString();
+			JSONObject msgObj = this.toJson(extras);
+			String message = msgObj.toString();
 			KiiPushUnityPlugin.getInstance().sendPushNotification(this, message);
 			if (!this.isForeground()) {
-				this.showNotificationArea(message);
+				this.showNotificationArea(msgObj);
 			}
 		}
 		GCMBroadcastReceiver.completeWakefulIntent(intent);
@@ -55,13 +56,17 @@ public class GcmIntentService extends IntentService {
 		}
 		return json;
 	}
-	private void showNotificationArea(String message) {
+	private void showNotificationArea(JSONObject msgObj) {
+		Log.d("showNotificationArea", "#####message=" + msgObj.toString());
 		NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 		if (notificationManager != null) {
 			
 			// TODO: Set message to show the title and message on status bar.
 			String notificationTitle = "Title";
 			String notificationText = "Message";
+			// Example of custom code:
+			String url = msgObj.optString("url", "error: failed to get url");
+			notificationText += url;
 			
 			String launchClassName = this.getPackageManager().getLaunchIntentForPackage(this.getPackageName()).getComponent().getClassName();
 			ComponentName componentName = new ComponentName(this.getPackageName(), launchClassName);
